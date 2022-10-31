@@ -1,15 +1,14 @@
 <!-- 全局vue组件  -->
 <template>
-    <div class='header'>{{ name }}</div>
+    <div class="header">{{ name }}</div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-interface Props{
+import { ref } from "vue"
+interface Props {
     name: string
 }
-defineProps<Props>();
-
+defineProps<Props>()
 </script>
 
 <!-- 写法二 -->
@@ -40,6 +39,7 @@ defineProps(['name']);
 </script>  -->
 
 <style scoped>
-
+.header {
+    color: red;
+}
 </style>
- 

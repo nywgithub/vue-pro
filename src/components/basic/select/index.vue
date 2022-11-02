@@ -7,6 +7,7 @@
             @blur="blur"
             :ref="getInputDom"
             readonly
+            v-bind="$attrs"
         />
     </div>
     <dropDown
@@ -39,7 +40,7 @@ const inputRef = ref()
 const dropRef = ref()
 
 const dropStyle = reactive({
-    display: "none",
+    display: "block",
 })
 
 function onSelect(item: any) {
@@ -47,11 +48,12 @@ function onSelect(item: any) {
 }
 
 function focus() {
+    dropStyle.display = "block"
     align()
 }
 
 function blur() {
-    dropStyle.display = "none"
+    // dropStyle.display = "none"
 }
 
 function align() {

@@ -81,7 +81,5 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.todo-item {
-    display: flex;
-}
+
 </style>

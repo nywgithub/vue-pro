@@ -3,10 +3,7 @@
     <Header name="组件传值测试"></Header>
     <div class="content">{{ msg }}</div>
     <button @click="(e) => handleClick(e, 'hh')">点击</button>
-    <input
-        :value="inputValue"
-        @input="$emit('handleInput', $event?.target?.value)"
-    />
+    <input :value="inputValue" @input="handleInput" />
     <div>
         <input v-model="navtiveInputValue" />
         {{ navtiveInputValue }}
@@ -26,9 +23,13 @@ const navtiveInputValue = ref("")
 
 interface Emits {
     (e: "buttonClick"): void
-    (e: "handleInput"): void
+    (e: "handleInput", event: any): void
 }
 const emit = defineEmits<Emits>()
+
+const handleInput = (e: any) => {
+    emit("handleInput", e.target.value)
+}
 
 const handleClick = (e: MouseEvent, msg: string) => {
     console.log(e, msg, props.msg)

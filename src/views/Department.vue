@@ -8,11 +8,15 @@
                     @update:input-value="update"
                     placeholder="请输入"
                 /> -->
-                <Input v-model:input-value="inputValue" placeholder="请输入" />
+                <Input
+                    v-model:input-value="inputValue"
+                    placeholder="请输入名字"
+                />
                 <Select
                     :list="list"
                     @onSelect="onSelect"
                     v-model:value="value"
+                    placeholder="选择一个部门"
                 ></Select>
                 <button @click="search">search</button>
             </div>

@@ -12,9 +12,8 @@
                     class="todo-item"
                     :class="{ active: currentItem === index }"
                     v-for="(item, index) in todoList"
-                    @click="itemClick(item, index)"
                 >
-                    <div class="todo-content">
+                    <div class="todo-content" @click="itemClick(item, index)">
                         <div>{{ index + 1 }}</div>
                         <p>{{ item }}</p>
                     </div>
@@ -105,7 +104,19 @@ function itemClick(item: string, index: number) {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.todo-item {
+    display: flex;
+    border-bottom: 1px solid #000;
+    .todo-content {
+        cursor: pointer;
+        width: 80%;
+    }
+    .todo-delete {
+        width: 20%;
+        cursor: pointer;
+    }
+}
 .todo-item.active {
     color: red;
 }

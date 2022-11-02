@@ -3,7 +3,7 @@
     <div class="input-wrap">
         <input
             :value="inputValue"
-            @input="$emit('update:inputValue', $event?.target?.value)"
+            @input="handleInput"
             v-bind="$attrs"
             ref="inputRef"
         />
@@ -17,9 +17,13 @@ defineProps<{
     inputValue?: any
 }>()
 
-defineEmits<{
-    (e: "update:inputValue"): void
+const emit = defineEmits<{
+    (e: "update:inputValue", event: any): void
 }>()
+
+const handleInput = (e: any) => {
+    emit("update:inputValue", e?.target?.value)
+}
 
 const inputRef = ref()
 defineExpose({

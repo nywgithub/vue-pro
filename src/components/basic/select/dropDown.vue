@@ -1,7 +1,7 @@
 <!--  -->
 <template>
     <Teleport to="body">
-        <div class="dropDown-wrap" ref="dropDownRef" style="style">
+        <div class="dropDown-wrap" ref="dropDownRef" v-bind="{ ...$attrs }">
             <ul>
                 <li v-for="item in list" @click="emit('onSelect', item)">
                     {{ item }}
@@ -21,7 +21,6 @@ import { ref } from "vue"
 const dropDownRef = ref()
 
 defineProps<{
-    style?: any
     list?: Array<any>
 }>()
 
@@ -47,5 +46,13 @@ defineExpose({
     font-size: 14px;
     box-shadow: 0 3px 6px -4px #0000001f, 0 6px 16px #00000014,
         0 9px 28px 8px #0000000d;
+    ul {
+        padding: 0;
+    }
+    li {
+        cursor: pointer;
+        list-style: none;
+        border-bottom: 1px solid #000;
+    }
 }
 </style>

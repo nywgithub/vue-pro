@@ -3,10 +3,11 @@ import { createRouter, createWebHashHistory } from "vue-router"
 // 1. 定义路由组件.
 // 也可以从其他文件导入
 
-import TodoList from "../components/TodoList.vue"
-import Check from "../components/Check.vue"
-import HelloWorld from "../components/HelloWorld.vue"
-import Card from "../components/Card.vue"
+import TodoList from "../views/TodoList.vue"
+import Check from "../views/check.vue"
+import HelloWorld from "../views/HelloWorld.vue"
+import Card from "../views/Card.vue"
+import Department from "../views/Department.vue"
 
 // 2. 定义一些路由
 // 每个路由都需要映射到一个组件。
@@ -27,6 +28,10 @@ const routes = [
     {
         path: "/todoList",
         component: TodoList,
+    },
+    {
+        path: "/dep",
+        component: Department,
     },
 ]
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-import Check from "./components/Check.vue"
+import Check from "../components/Check.vue"
 
 const handleInput2 = (e: any) => {
     console.log(e)

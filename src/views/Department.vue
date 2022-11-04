@@ -9,7 +9,7 @@
                     placeholder="请输入"
                 /> -->
                 <Input
-                    v-model:input-value="inputValue"
+                    v-model:inputValue="inputValue"
                     placeholder="请输入名字"
                 />
                 <Select
@@ -21,12 +21,13 @@
                 <button @click="search">search</button>
             </div>
         </div>
+        <div class="user-table"></div>
         <div class="user-dep-tree"></div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, h, shallowRef } from "vue"
 import Input from "../components/basic/input/index.vue"
 import Select from "../components/basic/select/index.vue"
 

@@ -4,7 +4,6 @@
         <Input
             :value="value"
             @focus="focus"
-            @blur="blur"
             :ref="getInputDom"
             readonly
             v-bind="$attrs"
@@ -19,10 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, computed } from "vue"
+import { ref, reactive, watch, computed, nextTick } from "vue"
 import dropDown from "./dropDown.vue"
 import Input from "../input/index.vue"
 import domAlign from "dom-align"
+import { onClickOutside } from "@vueuse/core"
 
 withDefaults(
     defineProps<{
@@ -47,13 +47,13 @@ function onSelect(item: any) {
     emit("update:value", item)
 }
 
-function focus() {
+async function focus() {
     dropStyle.display = "block"
+    await nextTick
     align()
-}
-
-function blur() {
-    // dropStyle.display = "none"
+    /* nextTick(() => {
+        align()
+    }) */
 }
 
 function align() {
@@ -64,9 +64,19 @@ function align() {
 }
 
 function getInputDom(ref: any) {
-    console.log(ref.inputRef)
     inputRef.value = ref.inputRef
 }
+
+watch(
+    () => inputRef.value,
+    (newVal) => {
+        newVal &&
+            onClickOutside(inputRef.value, (event) => {
+                dropStyle.display = "none"
+                console.log(event)
+            })
+    }
+)
 </script>
 
 <style scoped></style>

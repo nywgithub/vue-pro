@@ -73,7 +73,6 @@ watch(
         newVal &&
             onClickOutside(inputRef.value, (event) => {
                 dropStyle.display = "none"
-                console.log(event)
             })
     }
 )

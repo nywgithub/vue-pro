@@ -8,6 +8,7 @@ import Check from "../views/check.vue"
 import HelloWorld from "../views/HelloWorld.vue"
 import Card from "../views/Card.vue"
 import Department from "../views/Department.vue"
+import Form from "../views/Form.vue"
 
 // 2. 定义一些路由
 // 每个路由都需要映射到一个组件。
@@ -32,6 +33,10 @@ const routes = [
     {
         path: "/dep",
         component: Department,
+    },
+    {
+        path: "/form",
+        component: Form,
     },
 ]
 

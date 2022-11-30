@@ -2,6 +2,7 @@ import { createApp } from "vue"
 import "./style.css"
 import App from "./App.vue"
 import Header from "./components/global/Header.vue"
+import moment from "moment"
 import ElementPlus from "element-plus"
 // 引入所有图标
 import * as Icons from "@element-plus/icons-vue"
@@ -23,5 +24,8 @@ for (const name in Icons) {
 
 app.use(router)
 app.use(ElementPlus)
+
+//挂载全局方法
+app.config.globalProperties.$moment = moment
 
 app.mount("#app")

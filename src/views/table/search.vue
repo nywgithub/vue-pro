@@ -70,9 +70,7 @@
 
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
-                    <el-button type="primary" @click="reset(formRef)"
-                        >重置</el-button
-                    >
+                    <el-button type="primary" @click="onReset">重置</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -89,8 +87,18 @@ const formRef = ref<FormInstance>()
 
 const activeTabName = ref<string>("en")
 
+function clear() {
+    for (const key in searchForm) {
+        if (Object.prototype.hasOwnProperty.call(searchForm, key)) {
+            //@ts-ignore
+            searchForm[key] = ""
+        }
+    }
+}
+
 function handleTabClick(tab: TabsPaneContext, event: Event) {
     console.log("activeTabName", tab.paneName)
+    clear()
 }
 
 const initForm = {
@@ -104,17 +112,37 @@ const initForm = {
     // form8: "",
     // form9: "",
 }
-const searchForm = ref(initForm)
+const searchForm = reactive(initForm)
 
 const emit = defineEmits<{
     (e: "onSubmit", data: any): void
+    (e: "onReset"): void
 }>()
 
 function onSubmit() {
-    emit("onSubmit", { lang: activeTabName.value, ...searchForm.value })
+    console.log(initForm)
+    // 确认是否空表单
+    if (
+        JSON.stringify(searchForm) ===
+        JSON.stringify({
+            form1: "",
+            form2: "",
+            form3: "",
+            form4: "",
+            // form5: "",
+            // form6: "",
+            // form7: "",
+            // form8: "",
+            // form9: "",
+        })
+    )
+        return
+    emit("onSubmit", { lang: activeTabName.value, ...searchForm })
 }
-function reset(formEl: FormInstance | undefined) {
-    formEl?.resetFields()
+
+function onReset() {
+    clear()
+    emit("onReset")
 }
 </script>
 

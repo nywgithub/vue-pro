@@ -38,16 +38,16 @@ axios.interceptors.response.use(
     (err) => {
         // 异常的请求返回处理
         const data = {
-            message: err.response.data.message || "请重试",
+            message: err.response?.data?.message || "请重试",
             code:
-                err.response.status !== 200
-                    ? err.response.status
-                    : err.response.data.code,
+                err.response?.status !== 200
+                    ? err.response?.status
+                    : err.response?.data?.code,
         }
         throw data
     }
 )
 
-let host = ""
+let host = "http://mfoss.vemic.com:8080"
 // let host = 'http://127.0.0.1:4523/mock/821010'
 export { axios, host }

@@ -192,7 +192,7 @@ const props = withDefaults(
     defineProps<{
         tableData: Array<any>
         loading: boolean
-        lanCode: string
+        lanCode: number
     }>(),
     {
         loading: false,

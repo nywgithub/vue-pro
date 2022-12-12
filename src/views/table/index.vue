@@ -47,7 +47,7 @@ const loading = ref(false)
 
 const searchFormRef = ref()
 
-const lanCode = ref("en")
+const lanCode = ref(0)
 
 onMounted(() => {
     initFetch()
@@ -68,7 +68,7 @@ const initFetch = () => {
     const data = {
         ...initForm,
         ...initPager,
-        lanCode: "en",
+        lanCode: lanCode.value,
     }
     fetchEntranceList(data as API.getHeaderListParams)
 }
@@ -91,7 +91,7 @@ function onReset() {
     initFetch()
 }
 
-function onTabChange(lang: string) {
+function onTabChange(lang: number) {
     lanCode.value = lang
     const data = {
         ...initForm,

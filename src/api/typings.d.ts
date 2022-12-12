@@ -2,7 +2,7 @@
 declare namespace API {
     type getHeaderListParams = {
         entranceName?: string
-        lanCode?: string
+        lanCode?: number
         startTime?: number | ""
         endTime?: number | ""
         status?: HeaderCell.status

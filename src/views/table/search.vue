@@ -10,7 +10,7 @@
             <el-tab-pane
                 v-for="lang in LANG"
                 :label="lang.label"
-                :name="lang.value"
+                :name="lang.lanCode"
             ></el-tab-pane>
         </el-tabs>
         <div class="form-area">
@@ -73,7 +73,7 @@ import { initForm } from "../../data/search"
 
 const formRef = ref<FormInstance>()
 
-const activeTabName = ref<string>("en")
+const activeTabName = ref(0)
 
 function clear() {
     for (const key in searchForm) {
@@ -87,7 +87,7 @@ function clear() {
 function handleTabClick(tab: TabsPaneContext, event: Event) {
     console.log("activeTabName", tab.paneName)
     clear()
-    emit("onTabChange", tab.paneName as string)
+    emit("onTabChange", tab.paneName as number)
 }
 
 const searchForm = reactive({ ...initForm })
@@ -95,7 +95,7 @@ const searchForm = reactive({ ...initForm })
 const emit = defineEmits<{
     (e: "onSubmit", data: any): void
     (e: "onReset"): void
-    (e: "onTabChange", tab: string): void
+    (e: "onTabChange", tab: number): void
 }>()
 
 function onSubmit() {

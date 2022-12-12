@@ -5,6 +5,9 @@ export const getEntranceList = (params: API.getHeaderListParams) => {
     return axios({
         url: `${host}/site/header/entrance/query`,
         method: "get",
+        headers: {
+            "Content-Type": "application/json",
+        },
         params,
     })
 }

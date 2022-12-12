@@ -8,64 +8,82 @@
             max-height="400"
             :data="tableData"
             style="width: 100%; margin-bottom: 20px"
-            row-key="id"
+            row-key="recId"
             border
             default-expand-all
             v-loading="loading"
             :row-class-name="tableRowClassName"
+            :tree-props="{ children: 'children', hasChildren: 'xxxx' }"
             @cell-mouse-enter="cellmouseenter"
             @cell-mouse-leave="cellmouseleave"
         >
             <el-table-column prop="index" label="序号" width="70">
             </el-table-column>
-            <el-table-column prop="data1" label="层级" />
-            <el-table-column prop="data2" label="入口名称" />
-            <el-table-column prop="data3" label="查阅对象" />
-            <el-table-column prop="data4" label="链接">
+            <el-table-column prop="entranceType" label="层级">
                 <template #default="scope">
-                    <a :href="scope.row.data4">{{ scope.row.data4 }}</a>
+                    {{ scope.row.entranceType === 1 ? "主入口" : "子入口" }}
+                </template>
+            </el-table-column>
+
+            <el-table-column prop="entranceName" label="入口名称" />
+            <el-table-column prop="targetType" label="查阅对象">
+                <template #default="scope">
+                    {{ scope.row.targetType === 0 ? "全部" : "指定区域" }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="targetLink" label="链接">
+                <template #default="scope">
+                    <a :href="scope.row.targetLink">{{
+                        scope.row.targetLink
+                    }}</a>
                 </template>
             </el-table-column>
             <!-- 时间默认给时间戳 -->
-            <el-table-column prop="data5" label="开始时间">
+            <el-table-column prop="startTime" label="开始时间">
                 <template #default="scope">
                     <span class="format-time">
                         {{
-                            $moment(scope.row.data5).format("YYYY.MM.DD HH:mm")
+                            $moment(scope.row.startTime).format(
+                                "YYYY.MM.DD HH:mm"
+                            )
                         }}
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column prop="data6" label="结束时间">
+            <el-table-column prop="endTime" label="结束时间">
                 <template #default="scope">
                     <span class="format-time">
                         {{
-                            $moment(scope.row.data6).format("YYYY.MM.DD HH:mm")
+                            $moment(scope.row.endTime).format(
+                                "YYYY.MM.DD HH:mm"
+                            )
                         }}
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column prop="data7" label="编辑人" />
-            <el-table-column prop="data8" label="编辑时间">
+            <el-table-column prop="updaterName" label="编辑人" />
+            <el-table-column prop="updateTime" label="编辑时间">
                 <template #default="scope">
                     <span class="format-time">
                         {{
-                            $moment(scope.row.data8).format("YYYY.MM.DD HH:mm")
+                            $moment(scope.row.updateTime).format(
+                                "YYYY.MM.DD HH:mm"
+                            )
                         }}
                     </span>
                 </template>
             </el-table-column>
-            <el-table-column prop="data9" label="状态">
+            <el-table-column prop="status" label="状态">
                 <template #default="scope">
-                    <span v-if="scope.row.data9 === 0">
+                    <span v-if="scope.row.status === 0">
                         <div class="point-enable"></div>
                         已启用
                     </span>
-                    <span v-else-if="scope.row.data9 === 1">
+                    <span v-else-if="scope.row.status === 1">
                         <div class="point-disable"></div>
                         已禁用
                     </span>
-                    <span v-else-if="scope.row.data9 === 2">
+                    <span v-else-if="scope.row.status === 2">
                         <div class="point-draft"></div>
                         草稿
                     </span>
@@ -95,7 +113,7 @@
                         删除
                     </el-button>
                     <el-button
-                        v-if="scope.row.data9 === false"
+                        v-if="scope.row.status === false"
                         link
                         type="primary"
                         size="small"
@@ -121,10 +139,11 @@
                     class="oss-pagination"
                     v-model:current-page="currentPage"
                     :page-size="10"
-                    :background="true"
+                    background
                     layout="prev, pager, next,total, jumper"
                     :total="totalPage"
                     @current-change="handleCurrentChange"
+                    hide-on-single-page
                 />
             </template>
         </el-table>
@@ -160,6 +179,7 @@ import {
     nextTick,
     getCurrentInstance,
 } from "vue"
+import { useRouter } from "vue-router"
 import domAlign from "dom-align"
 import DeleteDialog from "./dialog/deleteDialog.vue"
 import { ListItem } from "../../model/table"
@@ -168,29 +188,22 @@ const { proxy }: any = getCurrentInstance()
 
 const { $moment, $message } = proxy
 
-const props = defineProps<{
-    tableData: Array<any>
-}>()
+const props = withDefaults(
+    defineProps<{
+        tableData: Array<any>
+        loading: boolean
+        lanCode: string
+    }>(),
+    {
+        loading: false,
+    }
+)
+
+//路由
+const router = useRouter()
 
 //点击的row
-const currentRow = ref<ListItem>({
-    recId: 64,
-    entranceType: 2,
-    entranceName: "test",
-    targetType: 1,
-    targetLink:
-        "4g#a(CBpQYvUIdnYxX$4B[hKe*ssR%NLA(7tJCNPrL4B1u2jlU[e&KtmOTeFE&LU#icxRr26#P^sO@7W49k2ZAT^gJn0AJp#U0ThJr%(PFc7)[&rjYk&Y[OM%BijpnuMA&bf2!@Zlk",
-    startTime: 19,
-    endTime: 18,
-    status: 1,
-    parentId: 58,
-    index: 84,
-    updateTime: 50,
-    updaterName: "test",
-    hasChildren: true,
-})
-
-const loading = ref(false)
+const currentRow = ref<ListItem>()
 
 //分页
 const currentPage = ref(1)
@@ -248,14 +261,24 @@ function deleteConfirm() {
     afterConfirm()
 
     const data = {
-        recId: currentRow.value.recId,
-        status: currentRow.value.status,
+        recId: currentRow!.value!.recId,
+        status: currentRow!.value!.status,
     }
     console.log(data)
     //TODO:fetch delete
 }
 
-function editEntrance(index: number, row: any) {}
+function editEntrance(index: number, row: any) {
+    router.push({
+        path: "form",
+        query: {
+            lanCode: props.lanCode,
+            type: "edit",
+            entry: row.entranceType,
+            recId: row.recId,
+        },
+    })
+}
 function delEntrance(index: number, row: any) {
     deleteDialogVisible.value = true
     currentRow.value = row

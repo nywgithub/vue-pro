@@ -22,52 +22,36 @@
                 ref="formRef"
             >
                 <el-form-item label="名称">
-                    <el-input v-model="searchForm.form1" placeholder="请输入" />
+                    <el-input
+                        v-model="searchForm.entranceName"
+                        placeholder="请输入"
+                    />
                 </el-form-item>
-                <!-- <el-form-item label="层级">
-                    <el-input v-model="searchForm.form2" placeholder="请输入" />
-                </el-form-item>
-                <el-form-item label="链接">
-                    <el-input v-model="searchForm.form3" placeholder="请输入" />
-                </el-form-item>
-                <el-form-item label="查阅对象">
-                    <el-select placeholder="请选择" v-model="searchForm.form4">
-                        <el-option label="全体" value="全体" />
-                        <el-option label="部分区域" value="部分区域" />
-                    </el-select>
-                </el-form-item> -->
                 <el-form-item label="状态">
-                    <el-select placeholder="请选择" v-model="searchForm.form2">
-                        <el-option label="启用" value="启用" />
-                        <el-option label="禁用" value="禁用" />
-                        <el-option label="草稿" value="草稿" />
+                    <el-select placeholder="请选择" v-model="searchForm.status">
+                        <el-option label="启用" value="2" />
+                        <el-option label="禁用" value="1" />
+                        <el-option label="草稿" value="3" />
                     </el-select>
                 </el-form-item>
                 <el-form-item label="开始时间">
                     <el-date-picker
-                        v-model="searchForm.form3"
+                        v-model="searchForm.startTime"
                         type="date"
+                        format="YYYY/MM/DD"
+                        value-format="x"
                         placeholder="请选择"
                     />
                 </el-form-item>
                 <el-form-item label="结束时间">
                     <el-date-picker
-                        v-model="searchForm.form4"
+                        v-model="searchForm.endTime"
                         type="date"
+                        format="YYYY/MM/DD"
+                        value-format="x"
                         placeholder="请选择"
                     />
                 </el-form-item>
-                <!--  <el-form-item label="编辑人">
-                    <el-input v-model="searchForm.form8" placeholder="请输入" />
-                </el-form-item>
-                <el-form-item label="编辑时间">
-                    <el-date-picker
-                        v-model="searchForm.form9"
-                        type="date"
-                        placeholder="请选择"
-                    />
-                </el-form-item> -->
-
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                     <el-button type="primary" @click="onReset">重置</el-button>
@@ -77,11 +61,15 @@
     </div>
 </template>
 
+<!-- TODO:
+activeTabName搞成受控模式  
+-->
+
 <script setup lang="ts">
 import { ref, reactive, watch, computed, h, shallowRef, nextTick } from "vue"
-import type { TabsPaneContext } from "element-plus"
-import type { FormInstance } from "element-plus"
+import type { TabsPaneContext, FormInstance } from "element-plus"
 import { LANG } from "../../model/lang"
+import { initForm } from "../../data/search"
 
 const formRef = ref<FormInstance>()
 
@@ -99,45 +87,21 @@ function clear() {
 function handleTabClick(tab: TabsPaneContext, event: Event) {
     console.log("activeTabName", tab.paneName)
     clear()
+    emit("onTabChange", tab.paneName as string)
 }
 
-const initForm = {
-    form1: "",
-    form2: "",
-    form3: "",
-    form4: "",
-    // form5: "",
-    // form6: "",
-    // form7: "",
-    // form8: "",
-    // form9: "",
-}
-const searchForm = reactive(initForm)
+const searchForm = reactive({ ...initForm })
 
 const emit = defineEmits<{
     (e: "onSubmit", data: any): void
     (e: "onReset"): void
+    (e: "onTabChange", tab: string): void
 }>()
 
 function onSubmit() {
-    console.log(initForm)
-    // 确认是否空表单
-    if (
-        JSON.stringify(searchForm) ===
-        JSON.stringify({
-            form1: "",
-            form2: "",
-            form3: "",
-            form4: "",
-            // form5: "",
-            // form6: "",
-            // form7: "",
-            // form8: "",
-            // form9: "",
-        })
-    )
-        return
-    emit("onSubmit", { lang: activeTabName.value, ...searchForm })
+    // 确认是否初始表单
+    if (JSON.stringify(searchForm) === JSON.stringify(initForm)) return
+    emit("onSubmit", { lanCode: activeTabName.value, ...searchForm })
 }
 
 function onReset() {

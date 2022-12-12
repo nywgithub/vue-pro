@@ -1,5 +1,9 @@
+export type langType = {
+    label: string
+    value: string
+}
 
-const LANG = [
+export const LANG: Array<langType> = [
     {
         label: "英语",
         value: "en",
@@ -26,11 +30,11 @@ const LANG = [
     },
     {
         label: "德语",
-        value: "gr",
+        value: "de",
     },
     {
         label: "荷兰语",
-        value: "nt",
+        value: "nl",
     },
     {
         label: "阿拉伯语",
@@ -45,5 +49,3 @@ const LANG = [
         value: "jp",
     },
 ]
-
-export { LANG }

@@ -5,193 +5,240 @@
             ref="ruleFormRef"
             :model="ruleForm"
             :rules="rules"
-            label-width="120px"
-            class="demo-ruleForm"
-            :size="formSize"
+            label-width="140px"
+            class="oss-ruleForm"
             status-icon
         >
-            <div class="title">修改页头配置</div>
-            <el-form-item label="所属站点" prop="prop1">
-                <el-select
-                    v-model="ruleForm.prop1"
-                    placeholder="请选择对应站点"
-                >
-                    <el-option
-                        v-for="item in LANG"
-                        :label="item.label"
-                        :value="item.value"
-                    />
-                </el-select>
+            <div class="title">
+                <span>修改页头配置</span>
+                <span></span>
+            </div>
+
+            <el-form-item label="所属站点：">
+                {{ lanCodeCn }}
+            </el-form-item>
+
+            <el-form-item label="入口层级：">
+                {{ entry === "1" ? "主入口" : "子入口" }}
             </el-form-item>
 
             <el-form-item
-                label="入口层级"
-                prop="prop2_1"
-                :required="ruleForm.prop2 === '子入口'"
+                label="从属主入口："
+                prop="parentName"
+                v-if="entry === '2'"
             >
-                <el-radio-group v-model="ruleForm.prop2">
-                    <el-radio label="主入口" value="主入口" />
-                    <el-radio label="子入口" value="子入口" />
-                </el-radio-group>
                 <el-select
-                    v-show="ruleForm.prop2 === '子入口'"
                     placeholder="选择从属主入口"
-                    v-model="ruleForm.prop2_1"
+                    v-model="ruleForm.parentName"
                 >
                     <el-option
-                        v-for="item in enters"
-                        :label="item.label"
-                        :value="item.value"
+                        v-for="item in entries"
+                        :label="item.entranceName"
+                        :value="item.recId"
                     />
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="入口名称" prop="prop3">
+            <el-form-item label="入口名称：" prop="entranceName">
                 <el-input
                     maxlength="20"
                     placeholder="最多输入20个字符"
-                    v-model="ruleForm.prop3"
+                    v-model="ruleForm.entranceName"
                 />
             </el-form-item>
 
-            <el-form-item
-                label="查阅对象"
-                prop="prop4_1"
-                :required="ruleForm.prop4 === '部分区域' && isOpenCountry"
-            >
-                <el-radio-group v-model="ruleForm.prop4">
-                    <el-radio label="全体" value="全体" />
-                    <el-radio label="部分区域" value="部分区域" />
-                </el-radio-group>
-                <el-select
-                    v-show="ruleForm.prop4 === '部分区域' && isOpenCountry"
-                    placeholder="选择相应国家"
-                    v-model="ruleForm.prop4_1"
-                >
-                    <el-option
-                        v-for="item in countries"
-                        :label="item.name"
-                        :value="item.abb"
-                    />s
-                </el-select>
+            <el-form-item label="查阅对象：" prop="targetCountry">
+                <CountrySelector
+                    ref="countrySelectRef"
+                    v-model:value="ruleForm.targetCountry"
+                    showCheckAll
+                    :data="countryData"
+                    :default="defaultCountryStr"
+                    :defaultCheckAll="isCheckAll"
+                ></CountrySelector>
             </el-form-item>
 
-            <el-form-item
-                label="链接"
-                prop="prop5"
-                :required="ruleForm.prop2 === '子入口'"
-            >
+            <el-form-item label="站内链接：" prop="targetLink">
                 <el-input
                     placeholder="必须是MIC站内链接MIC站内链接"
-                    v-model="ruleForm.prop5"
+                    v-model="ruleForm.targetLink"
                 >
-                    <template #prepend>Http://</template>
+                    <template #prepend>Https://</template>
                 </el-input>
             </el-form-item>
 
-            <el-form-item label="悬浮提示文案" prop="prop6">
+            <el-form-item
+                v-if="ruleForm.targetLink"
+                label="设为No Follow："
+                prop="noFollow"
+            >
+                <el-radio-group v-model="ruleForm.noFollow">
+                    <el-radio :label="1">是</el-radio>
+                    <el-radio :label="0">否</el-radio>
+                </el-radio-group>
+                <p>No Follow设置请与推广部确认</p>
+            </el-form-item>
+
+            <el-form-item label="悬浮提示文案：" prop="coverDesc">
                 <el-input
                     maxlength="100"
                     show-word-limit
                     autosize
-                    v-model="ruleForm.prop6"
+                    v-model="ruleForm.coverDesc"
                     type="textarea"
                     placeholder="注意大小写准确，标点符号使用规范，最多输入100个字符"
                 />
+                <p>注意大小写准确，标点符号使用规范</p>
             </el-form-item>
 
-            <el-form-item label="New标签" prop="prop7">
-                <el-radio-group v-model="ruleForm.prop7">
-                    <el-radio label="启用" value="启用" />
-                    <el-radio label="关闭" value="关闭" />
+            <el-form-item label="New标签：" prop="showNew">
+                <el-radio-group v-model="ruleForm.showNew">
+                    <el-radio :label="true">开启</el-radio>
+                    <el-radio :label="false">关闭</el-radio>
                 </el-radio-group>
+                <p>New 标签时效为1个月</p>
             </el-form-item>
 
-            <el-form-item label="开始时间" prop="prop8">
+            <el-form-item label="应用时间：" prop="effectiveDate">
                 <el-date-picker
-                    v-model="ruleForm.prop8"
-                    type="date"
-                    placeholder="选择开始时间"
-                    style="width: 100%"
+                    v-model="ruleForm.effectiveDate"
+                    type="daterange"
+                    range-separator="To"
+                    start-placeholder="Start date"
+                    end-placeholder="End date"
                 />
             </el-form-item>
 
-            <el-form-item label="结束时间" prop="prop9">
-                <el-date-picker
-                    v-model="ruleForm.prop9"
-                    type="date"
-                    placeholder="选择结束时间"
-                    style="width: 100%"
-                />
+            <el-form-item label="入口排序：" prop="queue">
+                <DragSort :list="sortList" />
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="saveForm(ruleFormRef)"
-                    >保存</el-button
-                >
-            </el-form-item>
-            <div class="title">确定入口位置</div>
-            <el-form-item label="选位权重" prop="prop10">
-                <DragSort />
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="preview">预览</el-button>
-                <el-button type="primary" @click="submitForm(ruleFormRef)"
-                    >应用</el-button
-                >
+                <el-button type="default" @click="saveForm(ruleFormRef)">
+                    保存为草稿
+                </el-button>
+                <el-button type="default" @click="preview">点击预览</el-button>
+                <el-button type="primary" @click="submitForm(ruleFormRef)">
+                    立即应用
+                </el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed, watch } from "vue"
+import { reactive, ref, computed, watch, onMounted } from "vue"
+import { useRouter, useRoute } from "vue-router"
 import type { FormInstance, FormRules } from "element-plus"
-import { countries } from "../../data/country"
-import { LANG } from "../../model/lang"
+import { countries, continents } from "../../data/country"
+import { LANG, langType } from "../../model/lang"
 import DragSort from "./dragSort.vue"
+import CountrySelector from "../../components/countrySelector.vue"
+import { getEntranceDetail, getValidEntranceList } from "../../api/index"
+import { detail, list, sortListDemo } from "../../data/detail"
+//路由信息
+const router = useRouter()
+const route = useRoute()
 
-const formSize = ref("default")
+const { recId, lanCode, entry, status } = route.query as any
+
+const formTitle = computed(() => {})
+
+const lanCodeCn = computed(() => {
+    let str = ""
+    LANG.some((item: langType) => {
+        if (item.value === lanCode) {
+            str = item.label
+            return true
+        }
+    })
+    return str
+})
+
 const ruleFormRef = ref<FormInstance>()
 
-const ruleForm = reactive<any>({
-    prop1: "en",
-    prop2: "主入口",
-    prop2_1: "",
-    prop3: "",
-    prop4: "全体",
-    prop4_1: "",
-    prop5: "",
-    prop6: "",
-    prop7: "关闭",
-    prop8: "",
-    prop9: "",
-    prop10: "",
+const ruleForm = ref<any>({
+    entranceType: "",
+    entranceName: "",
+    lanCode: "",
+    targetType: "",
+    targetCountry: "",
+    targetLink: "",
+    coverDesc: "",
+    showNew: false,
+    noFollow: "",
+    effectiveDate: "",
+    parentName: "",
+    queue: [],
+})
+
+//国家选择器
+const isCheckAll = ref(false)
+const defaultCountryStr = ref("")
+const countrySelectRef = ref()
+const countryData = continents.map((continent) => {
+    let countryArr: Array<any> = []
+    countries.forEach((country) => {
+        //把州匹配的国家放入数组
+        if (country.continent === continent.code) {
+            countryArr.push(country)
+        }
+    })
+    return {
+        ...continent,
+        children: countryArr,
+    }
 })
 
 //主入口列表
 interface selectItem {
-    label: string
-    value: any
+    recId: number
+    entranceName: string
 }
-const enters = ref<Array<selectItem>>([
-    {
-        label: "test",
-        value: "test",
-    },
-])
+const entries = ref<Array<selectItem>>([])
 
-//权重
-const points = computed(() => {
-    return ruleForm.prop2 === "主入口" ? 11 : 6
-})
+//排序列表
+const sortList = ref()
 
-watch(
-    () => ruleForm.prop2,
-    (newVal, oldVal) => {
-        newVal && (ruleForm.prop10 = "")
+//启用数量是否已达上限
+const isMaxApplied = ref(false)
+
+//初始化获取所有数据
+onMounted(() => {
+    /*
+    const getDetail = async () => {
+        const res = await getEntranceDetail({
+            recId,
+        })
+        const { maxApplied, startTime, endTime, queue, ...formData } = res.data
+        sortList.value = queue
+        ruleForm.value = formData
+        ruleForm..value.effectiveDate = [startTime, endTime]
+        isMaxApplied.value = maxApplied
     }
-)
+    const getValidEntrance = async () => {
+        const res = await getValidEntranceList({
+            recId,
+            lanCode,
+        })
+        entries.value = res.data || []
+    }
+    getDetail()
+    getValidEntrance() */
+
+    //test-模拟请求
+    setTimeout(() => {
+        const { maxApplied, startTime, endTime, ...formData } = detail
+        ruleForm.value = formData
+        ruleForm.value.effectiveDate = [startTime, endTime]
+        isCheckAll.value = ruleForm.value.targetType === "0"
+        defaultCountryStr.value = ruleForm.value.targetCountry
+        console.log(ruleForm.value.targetType)
+        isMaxApplied.value = maxApplied
+        entries.value = list
+        sortList.value = sortListDemo
+    })
+})
 
 //查阅对象是否开放国家
 const isOpenCountry = ref<boolean>(true)
@@ -288,7 +335,12 @@ const rules = reactive<FormRules>({
 })
 
 const submitForm = (formEl: FormInstance | undefined) => {
-    console.log(formEl)
+    console.log(
+        "sortList",
+        sortList.value.map((i: any) => i.recId)
+    )
+    console.log("countrySelectedStr", ruleForm.value.targetCountry)
+    console.log("是否全选状态", !countrySelectRef.value.isIndeterminate)
     if (!formEl) return
     formEl.validate((valid, fields) => {
         if (valid) {
@@ -298,7 +350,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
             return false
         }
     })
-    console.log(ruleForm)
+    console.log("ruleForm", ruleForm)
 }
 
 const saveForm = (formEl: FormInstance | undefined) => {

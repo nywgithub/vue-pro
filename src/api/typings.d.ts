@@ -3,8 +3,8 @@ declare namespace API {
     type getHeaderListParams = {
         entranceName?: string
         lanCode?: string
-        startTime?: number
-        endTime?: number
+        startTime?: number | ""
+        endTime?: number | ""
         status?: HeaderCell.status
         page?: number
     }
@@ -18,7 +18,10 @@ declare namespace API {
         lanCode: string
     }
 
-    type switchEntranceTypes = {}
+    type switchEntranceTypes = {
+        recId: number
+        status: string
+    }
 
     type saveEntranceTypes = {
         recId: number

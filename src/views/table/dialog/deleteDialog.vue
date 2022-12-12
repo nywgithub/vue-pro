@@ -7,14 +7,16 @@
         align-center
         append-to-body
     >
-        <template v-if="status === 2">
-            <p v-if="entranceType === 1">
+        <template v-if="row.status === 2">
+            <p v-if="row.entranceType === 1">
                 删除后该主入口及其子入口将不在前台展示，是否确认？
             </p>
             <p v-else>删除后该子入口将不在前台展示，是否确认？</p>
         </template>
         <template v-else>
-            <p v-if="entranceType === 1">是否确认删除该主入口及其子入口？</p>
+            <p v-if="row.entranceType === 1">
+                是否确认删除该主入口及其子入口？
+            </p>
             <p v-else>是否确认删除该子入口？</p>
         </template>
 
@@ -35,8 +37,6 @@ const props = defineProps<{
     visible: boolean
     row: any
 }>()
-
-const { status, entranceType, recId } = props.row
 
 const emit = defineEmits<{
     (e: "cancel"): void
